@@ -31,9 +31,9 @@ int main(void)
 
 ![](figures/settings.png)
  
-The most valuable of which is `Small`, as tiny does not even support flags for padding and the other two are just too big. 
+The most valuable of which is `Small`, as `Tiny` does not even support flags for padding and thus is pretty useless. And the other two are just too big. 
 
-Below are some of the pfliminary results that were obtained with a very ealy implementation of eprintf:
+Below are some of the preliminary results that were obtained with a very ealy implementation of eprintf:
 
 | Function     | Options   | Size, bytes |
 |--------------|-----------|-------------|
