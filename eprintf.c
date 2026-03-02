@@ -1,9 +1,19 @@
-#include "printf_core.h"
+#include "eprintf.h"
+#include "eprintf_formats.h"
 #include <string.h>
 
-/* Внешний массив форматов - должен быть определен в printf_extensions.c */
-extern const format_extension_t FORMATS[];
-extern const int FORMATS_COUNT;
+#define ARRAY_SIZE(arr)         (sizeof(arr) / sizeof((arr)[0]))
+
+#define X(a) void a##_handler(va_list *args, char **buffer, size_t *size, format_flags_t flags);
+FORMAT_TABLE
+#undef X
+
+#define X(a) {#a, a##_handler},
+static const format_extension_t FORMATS[] =
+{
+  FORMAT_TABLE
+};
+#undef X
 
 /* Внутренние функции работы с буфером */
 void buf_putc(char **buffer, size_t *size, char c) {
@@ -62,7 +72,7 @@ static bool is_spec_char(char c) {
 
 /* Поиск формата в отсортированном массиве */
 static int find_format_sorted(const char *format, int *spec_len) {
-    for (int i = 0; i < FORMATS_COUNT; i++) {
+    for (int i = 0; i < ARRAY_SIZE(FORMATS); i++) {
         int len = (int)strlen(FORMATS[i].spec);
         
         if (strncmp(format, FORMATS[i].spec, len) == 0) {
