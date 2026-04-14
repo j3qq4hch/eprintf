@@ -72,14 +72,14 @@ static bool is_spec_char(char c) {
 
 /* Поиск формата в отсортированном массиве */
 static int find_format_sorted(const char *format, int *spec_len) {
-    for (int i = 0; i < ARRAY_SIZE(FORMATS); i++) {
+    for (size_t i = 0; i < ARRAY_SIZE(FORMATS); i++) {
         int len = (int)strlen(FORMATS[i].spec);
         
         if (strncmp(format, FORMATS[i].spec, len) == 0) {
             char next = format[len];
             if (!is_spec_char(next) || next == '\0') {
                 *spec_len = len;
-                return i;
+                return (int)i;
             }
         }
     }
@@ -95,6 +95,11 @@ static void process_format(const char **format, va_list *args,
     
     if (**format == '\0') {
         buf_putc(buffer, remaining, '%');
+        return;
+    }
+    if (**format == '%') {
+        buf_putc(buffer, remaining, '%');
+        (*format)++;
         return;
     }
     

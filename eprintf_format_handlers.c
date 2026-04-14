@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdint.h>
 #include "eprintf.h"
-static const char *digits  = "0123456789ABCEF";
+static const char *digits  = "0123456789ABCDEF";
 
 /* Вывод числа без внутреннего буфера */
 static void print_number(uint32_t n, int sign, char **buffer, size_t *size,
@@ -89,7 +89,8 @@ void i_handler(va_list *args, char **buffer, size_t *size, format_flags_t flags)
 {
     int32_t val = va_arg(*args, int32_t);
     int sign = (val < 0) ? -1 : 0;
-    uint32_t abs_val = (val < 0) ? (uint32_t)(-val) : (uint32_t)val;
+    /* Avoid UB for INT32_MIN by doing the negation in unsigned arithmetic. */
+    uint32_t abs_val = (val < 0) ? (uint32_t)(0u - (uint32_t)val) : (uint32_t)val;
     print_number(abs_val, sign, buffer, size, flags, 10);
 }
 
